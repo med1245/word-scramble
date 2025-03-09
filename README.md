@@ -66,7 +66,7 @@ npm start
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is Made by Mehdi Marsaman
 
 ## Acknowledgments
 
