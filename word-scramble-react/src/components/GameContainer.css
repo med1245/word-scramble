@@ -1,0 +1,96 @@
+.game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.current-word {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+.word-display {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: rgba(78, 107, 255, 0.05);
+  border-radius: 12px;
+}
+
+.letter {
+  display: inline-block;
+  font-size: 42px;
+  font-weight: bold;
+  margin: 0 6px;
+  color: #4e6bff;
+  text-transform: uppercase;
+  animation: fadeIn 0.4s ease-out;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; transform: scale(0.9); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.feedback {
+  margin-top: 15px;
+  font-size: 16px;
+  height: 20px;
+  color: #4CAF50;
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.feedback.show {
+  opacity: 1;
+}
+
+.feedback.error {
+  color: #f44336;
+}
+
+form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+form input {
+  margin-bottom: 20px;
+  font-size: 20px;
+  text-align: center;
+  max-width: 400px;
+}
+
+form button {
+  padding: 14px 35px;
+  font-size: 18px;
+}
+
+.word-count {
+  background-color: rgba(78, 107, 255, 0.1);
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 14px;
+  margin-top: 10px;
+  color: #4e6bff;
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .word-display {
+    padding: 15px 10px;
+  }
+
+  .letter {
+    font-size: 36px;
+    margin: 0 4px;
+  }
+} 

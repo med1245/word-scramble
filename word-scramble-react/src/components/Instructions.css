@@ -1,0 +1,76 @@
+.instructions-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.instructions-container h2 {
+  font-size: 30px;
+  margin-bottom: 25px;
+  color: #333;
+  position: relative;
+  display: inline-block;
+}
+
+.instructions-container h2:after {
+  content: '';
+  position: absolute;
+  width: 50%;
+  height: 3px;
+  background: linear-gradient(to right, #4e6bff, #7986cb);
+  bottom: -8px;
+  left: 25%;
+  border-radius: 2px;
+}
+
+.instructions-content {
+  text-align: left;
+  margin-bottom: 30px;
+}
+
+.instructions-content p {
+  margin-bottom: 15px;
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+.instructions-content ol {
+  margin: 20px 0;
+  padding-left: 20px;
+}
+
+.instructions-content li {
+  margin-bottom: 12px;
+  line-height: 1.6;
+  position: relative;
+  padding-left: 10px;
+}
+
+/* Remove circles from numbered list */
+.instructions-content li::before {
+  display: none; /* Hide the blue circles */
+}
+
+.hint {
+  background-color: #f8f9fa;
+  padding: 18px;
+  border-radius: 8px;
+  border-left: 4px solid #4e6bff;
+  margin-top: 15px;
+  transition: transform 0.2s;
+}
+
+.hint:hover {
+  transform: translateY(-3px);
+}
+
+.hint strong {
+  color: #4e6bff;
+}
+
+.start-button {
+  margin-top: 15px;
+  padding: 14px 35px;
+  font-size: 18px;
+  transition: all 0.3s;
+} 
