@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Word Scramble Game</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background-color: #f0f2f5;
+      color: #333;
+    }
+    
+    .app {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    
+    button {
+      background-color: #4e6bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 22px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-weight: 600;
+      box-shadow: 0 3px 8px rgba(78, 107, 255, 0.3);
+    }
+    
+    button:hover {
+      background-color: #3a54e2;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 12px rgba(78, 107, 255, 0.4);
+    }
+
+    button:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 5px rgba(78, 107, 255, 0.3);
+    }
+    
+    button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .skip-button {
+      background-color: #ff7043;
+      box-shadow: 0 3px 8px rgba(255, 112, 67, 0.3);
+    }
+
+    .skip-button:hover {
+      background-color: #f4511e;
+      box-shadow: 0 5px 12px rgba(255, 112, 67, 0.4);
+    }
+
+    .skip-button:active {
+      box-shadow: 0 2px 5px rgba(255, 112, 67, 0.3);
+    }
+    
+    input {
+      padding: 14px 15px;
+      font-size: 18px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      width: 100%;
+      margin: 15px 0;
+      text-align: center;
+      font-family: 'Poppins', sans-serif;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+    
+    input:focus {
+      outline: none;
+      border-color: #4e6bff;
+      box-shadow: 0 2px 10px rgba(78, 107, 255, 0.2);
+    }
+    
+    .word-display {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+      padding: 20px;
+      background-color: rgba(78, 107, 255, 0.05);
+      border-radius: 12px;
+    }
+    
+    .letter {
+      display: inline-block;
+      font-size: 42px;
+      font-weight: bold;
+      margin: 0 6px;
+      color: #4e6bff;
+      text-transform: uppercase;
+      animation: fadeIn 0.4s ease-out;
+      text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+    }
+    
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    
+    .container {
+      background-color: white;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+      padding: 35px;
+      width: 100%;
+      margin-top: 25px;
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .container:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      margin-bottom: 30px;
+    }
+    
+    .logo h1 {
+      font-size: 36px;
+      color: #333;
+      margin-bottom: 15px;
+      font-weight: 700;
+      text-align: center;
+      text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+      background: linear-gradient(135deg, #4e6bff, #7986cb);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .game-info {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      background-color: white;
+      padding: 18px 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    }
+    
+    .timer, .score {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.2s;
+    }
+
+    .timer:hover, .score:hover {
+      transform: translateY(-3px);
+    }
+    
+    .label {
+      font-size: 14px;
+      color: #777;
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+    
+    .value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #333;
+      background: linear-gradient(135deg, #4e6bff, #7986cb);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .difficulty-selector {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .difficulty-selector label {
+      font-size: 14px;
+      color: #777;
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+    
+    .difficulty-selector select {
+      padding: 8px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      background-color: white;
+      cursor: pointer;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .difficulty-selector select:hover {
+      border-color: #4e6bff;
+    }
+
+    .difficulty-selector select:focus {
+      outline: none;
+      border-color: #4e6bff;
+      box-shadow: 0 0 0 3px rgba(78, 107, 255, 0.1);
+    }
+    
+    .difficulty-selector select:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    
+    .instructions-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .instructions-container h2 {
+      font-size: 30px;
+      margin-bottom: 25px;
+      color: #333;
+      position: relative;
+      display: inline-block;
+    }
+
+    .instructions-container h2:after {
+      content: '';
+      position: absolute;
+      width: 50%;
+      height: 3px;
+      background: linear-gradient(to right, #4e6bff, #7986cb);
+      bottom: -8px;
+      left: 25%;
+      border-radius: 2px;
+    }
+    
+    .instructions-content {
+      text-align: left;
+      margin-bottom: 30px;
+    }
+    
+    .instructions-content p {
+      margin-bottom: 15px;
+      line-height: 1.7;
+      font-size: 16px;
+    }
+    
+    .instructions-content ol {
+      margin: 20px 0;
+      padding-left: 20px;
+    }
+    
+    .instructions-content li {
+      margin-bottom: 12px;
+      line-height: 1.6;
+      position: relative;
+      padding-left: 10px;
+    }
+
+    /* Remove circles from numbered list */
+    .instructions-content li::before {
+      display: none; /* Hide the blue circles */
+    }
+    
+    .hint {
+      background-color: #f8f9fa;
+      padding: 18px;
+      border-radius: 8px;
+      border-left: 4px solid #4e6bff;
+      margin-top: 15px;
+      transition: transform 0.2s;
+    }
+
+    .hint:hover {
+      transform: translateY(-3px);
+    }
+    
+    .hint strong {
+      color: #4e6bff;
+    }
+    
+    .start-button {
+      margin-top: 15px;
+      padding: 14px 35px;
+      font-size: 18px;
+      transition: all 0.3s;
+    }
+    
+    .game-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .current-word {
+      font-size: 14px;
+      color: #777;
+      margin-bottom: 5px;
+      text-align: center;
+    }
+
+    .feedback {
+      margin-top: 15px;
+      font-size: 16px;
+      height: 20px;
+      color: #4CAF50;
+      font-weight: 600;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .feedback.show {
+      opacity: 1;
+    }
+
+    .feedback.error {
+      color: #f44336;
+    }
+    
+    form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    form input {
+      margin-bottom: 20px;
+      font-size: 20px;
+      text-align: center;
+      max-width: 400px;
+    }
+    
+    form button {
+      padding: 14px 35px;
+      font-size: 18px;
+    }
+    
+    .game-over-modal {
+      text-align: center;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .game-over-modal h2 {
+      font-size: 36px;
+      margin-bottom: 20px;
+      color: #333;
+      position: relative;
+      display: inline-block;
+    }
+
+    .game-over-modal h2:after {
+      content: '';
+      position: absolute;
+      width: 50%;
+      height: 3px;
+      background: linear-gradient(to right, #4e6bff, #7986cb);
+      bottom: -8px;
+      left: 25%;
+      border-radius: 2px;
+    }
+    
+    .final-score {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 30px;
+      padding: 20px;
+      background-color: rgba(78, 107, 255, 0.05);
+      border-radius: 12px;
+      transition: transform 0.3s;
+    }
+
+    .final-score:hover {
+      transform: scale(1.05);
+    }
+    
+    .score-label {
+      font-size: 20px;
+      color: #555;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+    
+    .score-value {
+      font-size: 60px;
+      font-weight: 700;
+      color: #4e6bff;
+      text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1);
+      background: linear-gradient(135deg, #4e6bff, #7986cb);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .score-message {
+      font-size: 20px;
+      margin: 25px 0;
+      color: #333;
+      line-height: 1.6;
+      padding: 15px;
+      border-radius: 8px;
+      background-color: #f8f9fa;
+      border-left: 4px solid #4e6bff;
+    }
+    
+    .restart-button {
+      padding: 14px 35px;
+      font-size: 18px;
+      background-color: #4CAF50;
+      box-shadow: 0 3px 8px rgba(76, 175, 80, 0.3);
+    }
+    
+    .restart-button:hover {
+      background-color: #3e8e41;
+      box-shadow: 0 5px 12px rgba(76, 175, 80, 0.4);
+    }
+
+    .restart-button:active {
+      box-shadow: 0 2px 5px rgba(76, 175, 80, 0.3);
+    }
+
+    /* Word count indicator */
+    .word-count {
+      background-color: rgba(78, 107, 255, 0.1);
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 14px;
+      margin-top: 10px;
+      color: #4e6bff;
+      font-weight: 600;
+    }
+    
+    @media (max-width: 600px) {
+      .game-info {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .container {
+        padding: 25px 15px;
+      }
+
+      .word-display {
+        padding: 15px 10px;
+      }
+
+      .letter {
+        font-size: 36px;
+        margin: 0 4px;
+      }
+
+      .button-group {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+      }
+
+      .button-group button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app" class="app">
+    <!-- App content will be rendered here by JavaScript -->
+  </div>
+
+  <script>
+    // Custom event handler setup to avoid re-rendering issues
+    document.addEventListener('DOMContentLoaded', function() {
+      // Game state
+      const state = {
+        score: 0,
+        timeLeft: 120,
+        isPlaying: false,
+        currentWord: '',
+        scrambledWord: '',
+        userInput: '',
+        showGameOver: false,
+        difficulty: 'medium',
+        wordCount: 0,
+        feedback: '',
+        feedbackType: 'success',
+        totalWords: 0
+      };
+
+      // Word lists by difficulty
+      const easyWords = [
+        'cat', 'dog', 'sun', 'hat', 'run', 'box', 'cup', 'pen', 'toy', 'car',
+          'ball', 'book', 'milk', 'fish', 'star', 'rain', 'cake', 'door', 'tree', 'bird',
+          'map', 'card', 'desk', 'coin', 'lamp', 'shoe', 'sock', 'bear', 'lion', 'duck'
+      ];
+
+      const mediumWords = [
+        'puzzle', 'guitar', 'dinner', 'camera', 'planet', 'rocket', 'animal', 'window',
+          'basket', 'laptop', 'garden', 'island', 'summer', 'winter', 'forest', 'mountain',
+          'journey', 'kitchen', 'comedy', 'rainbow', 'teacher', 'pencil', 'morning', 'dinner',
+          'picture', 'memory', 'program', 'system', 'market', 'office'
+      ];
+
+      const hardWords = [
+        'elephant', 'universe', 'symphony', 'chocolate', 'adventure', 'beautiful', 'challenge',
+          'developer', 'education', 'laboratory', 'philosophy', 'delicious', 'technology',
+          'incredible', 'mysterious', 'experience', 'knowledge', 'dictionary', 'imagination',
+          'environment', 'happiness', 'confidence', 'important', 'community', 'celebrate',
+          'discovery', 'appreciate', 'restaurant', 'friendship', 'literature'
+      ];
+
+      // Track used words to prevent repetition
+      const usedWords = {
+        easy: [],
+        medium: [],
+        hard: []
+      };
+
+      // Get total word count by difficulty
+      function getTotalWordCount() {
+        return {
+          easy: easyWords.length,
+          medium: mediumWords.length,
+          hard: hardWords.length
+        };
+      }
+
+      // Get a random word based on the difficulty level
+      function getRandomWord(difficulty) {
+        let wordList;
+        let usedWordsList;
+        
+        switch (difficulty) {
+          case 'easy':
+            wordList = easyWords;
+            usedWordsList = usedWords.easy;
+            break;
+          case 'medium':
+            wordList = mediumWords;
+            usedWordsList = usedWords.medium;
+            break;
+          case 'hard':
+            wordList = hardWords;
+            usedWordsList = usedWords.hard;
+            break;
+          default:
+            wordList = mediumWords;
+            usedWordsList = usedWords.medium;
+        }
+
+        // Reset used words if all words have been used
+        if (usedWordsList.length >= wordList.length) {
+          usedWordsList.length = 0;
+        }
+        
+        // Get a random word that hasn't been used yet
+        let word;
+        do {
+          const randomIndex = Math.floor(Math.random() * wordList.length);
+          word = wordList[randomIndex];
+        } while (usedWordsList.includes(word));
+        
+        // Add the word to the used words list
+        usedWordsList.push(word);
+        
+        return word;
+      }
+
+      // Scramble the letters of a word
+      function scrambleWord(word) {
+        const letters = word.split('');
+        
+        // Fisher-Yates shuffle algorithm
+        for (let i = letters.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [letters[i], letters[j]] = [letters[j], letters[i]];
+        }
+        
+        // Check if the scrambled word is the same as the original
+        const scrambled = letters.join('');
+        if (scrambled === word && word.length > 1) {
+          // If it's the same, try again
+          return scrambleWord(word);
+        }
+        
+        return scrambled;
+      }
+
+      // Format time to MM:SS
+      function formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+      }
+
+      // Get time limit based on difficulty
+      function getDifficultyTimeLimit() {
+        switch (state.difficulty) {
+          case 'easy': return 120;
+          case 'medium': return 120;
+          case 'hard': return 120;
+          default: return 120;
+        }
+      }
+
+      // Calculate points based on word length and difficulty
+      function calculatePoints() {
+        const basePoints = state.currentWord.length;
+        switch (state.difficulty) {
+          case 'easy': return basePoints;
+          case 'medium': return basePoints * 2;
+          case 'hard': return basePoints * 3;
+          default: return basePoints;
+        }
+      }
+
+      // Get a message based on the score and difficulty
+      function getScoreMessage() {
+        let threshold;
+        
+        switch (state.difficulty) {
+          case 'easy': threshold = 30; break;
+          case 'medium': threshold = 50; break;
+          case 'hard': threshold = 80; break;
+          default: threshold = 50;
+        }
+        
+        if (state.score >= threshold * 2) {
+          return "Amazing! You're a word master!";
+        } else if (state.score >= threshold) {
+          return "Great job! You have excellent word skills!";
+        } else if (state.score >= threshold / 2) {
+          return "Good effort! Keep practicing!";
+        } else {
+          return "Nice try! You'll do better next time!";
+        }
+      }
+
+      // Show feedback message
+      function showFeedback(message, type = 'success') {
+        state.feedback = message;
+        state.feedbackType = type;
+        
+        const feedbackEl = document.querySelector('.feedback');
+        if (feedbackEl) {
+          feedbackEl.textContent = message;
+          feedbackEl.className = `feedback show ${type === 'error' ? 'error' : ''}`;
+          
+          setTimeout(() => {
+            feedbackEl.className = 'feedback';
+          }, 2000);
+        }
+      }
+
+      // Game actions
+      const actions = {
+        startGame: function() {
+          state.score = 0;
+          state.timeLeft = getDifficultyTimeLimit();
+          state.isPlaying = true;
+          state.showGameOver = false;
+          state.wordCount = 0;
+          state.totalWords = getTotalWordCount()[state.difficulty];
+          
+          // Reset used words for the current difficulty
+          usedWords[state.difficulty] = [];
+          
+          this.nextWord();
+          this.startTimer();
+          render();
+          
+          // Add event handler for the input field after rendering
+          setupInputHandlers();
+        },
+        
+        nextWord: function() {
+          const word = getRandomWord(state.difficulty);
+          state.currentWord = word;
+          state.scrambledWord = scrambleWord(word);
+          state.userInput = '';
+          state.wordCount++;
+          render();
+          
+          // Reset the input field and setup handlers
+          setupInputHandlers();
+        },
+        
+        skipWord: function() {
+          // Deduct some points for skipping
+          const penaltyPoints = Math.min(5, state.score);
+          if (state.score > 0) {
+            state.score = Math.max(0, state.score - penaltyPoints);
+            showFeedback(`Skipped! -${penaltyPoints} points`, 'error');
+          } else {
+            showFeedback('Skipped!', 'error');
+          }
+          
+          this.nextWord();
+        },
+        
+        checkAnswer: function() {
+          // Get the current input value directly from the DOM
+          const inputField = document.querySelector('input[type="text"]');
+          if (inputField) {
+            state.userInput = inputField.value;
+          }
+          
+          if (!state.userInput.trim()) {
+            showFeedback('Please enter an answer!', 'error');
+            return;
+          }
+          
+          if (state.userInput.toLowerCase() === state.currentWord.toLowerCase()) {
+            // Correct answer
+            const points = calculatePoints();
+            state.score += points;
+            showFeedback(`Correct! +${points} points`);
+            this.nextWord();
+          } else {
+            // Wrong answer
+            showFeedback('Try again!', 'error');
+            // Clear the input field for another attempt
+            state.userInput = '';
+            if (inputField) {
+              inputField.value = '';
+            }
+          }
+        },
+        
+        changeDifficulty: function(newDifficulty) {
+          state.difficulty = newDifficulty;
+          if (state.isPlaying) {
+            // Restart game if already playing
+            this.startGame();
+          }
+          render();
+        },
+        
+        updateUserInput: function(input) {
+          state.userInput = input;
+        },
+        
+        startTimer: function() {
+          if (state.timer) {
+            clearInterval(state.timer);
+          }
+          
+          state.timer = setInterval(() => {
+            if (state.timeLeft > 0 && state.isPlaying) {
+              state.timeLeft--;
+              // Only update the timer display, not full re-render
+              const timerDisplay = document.querySelector('.timer .value');
+              if (timerDisplay) {
+                timerDisplay.textContent = formatTime(state.timeLeft);
+              }
+            } else if (state.timeLeft === 0 && state.isPlaying) {
+              this.endGame();
+            }
+          }, 1000);
+        },
+        
+        endGame: function() {
+          state.isPlaying = false;
+          state.showGameOver = true;
+          if (state.timer) {
+            clearInterval(state.timer);
+          }
+          render();
+        }
+      };
+
+      // Setup input field handlers
+      function setupInputHandlers() {
+        const inputField = document.querySelector('input[type="text"]');
+        if (!inputField) return;
+        
+        // Focus the input field
+        setTimeout(() => {
+          inputField.focus();
+        }, 100);
+        
+        // Remove any existing event listeners
+        const newInput = inputField.cloneNode(true);
+        inputField.parentNode.replaceChild(newInput, inputField);
+        
+        // Set up the input event handler directly
+        newInput.addEventListener('input', function(e) {
+          // Update state without re-rendering
+          state.userInput = e.target.value;
+        });
+        
+        // Add keydown event listener for better control
+        newInput.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            actions.checkAnswer();
+          }
+        });
+        
+        // Setup form submission
+        const form = document.querySelector('form');
+        if (form) {
+          form.onsubmit = function(e) {
+            e.preventDefault();
+            actions.checkAnswer();
+          };
+          
+          // Prevent default form behaviors that might interfere
+          form.setAttribute('autocomplete', 'off');
+          form.setAttribute('autocorrect', 'off');
+          form.setAttribute('autocapitalize', 'off');
+          form.setAttribute('spellcheck', 'false');
+        }
+        
+        // Focus back on the new input
+        newInput.focus();
+      }
+      
+      // Create game container component with modified input handling
+      function createGameContainer() {
+        return `
+          <div class="game-container container">
+            <div class="current-word">Word ${state.wordCount}</div>
+            <div class="word-display">
+              ${state.scrambledWord.split('').map(letter => 
+                `<span class="letter">${letter}</span>`
+              ).join('')}
+            </div>
+            
+            <form>
+              <input
+                type="text"
+                value="${state.userInput}"
+                placeholder="Type your answer here..."
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="false"
+              />
+              
+              <div class="feedback">${state.feedback}</div>
+              
+              <div class="button-group">
+                <button type="submit">Submit</button>
+                <button type="button" class="skip-button" onclick="actions.skipWord()">Skip Word</button>
+              </div>
+            </form>
+            
+            <div class="word-count">
+              ${state.wordCount} of ${state.totalWords} words
+            </div>
+          </div>
+        `;
+      }
+
+      // Render the game UI
+      function render() {
+        const app = document.getElementById('app');
+        
+        // Create header component
+        const header = `
+          <header class="header">
+            <div class="logo">
+              <h1>Word Scramble</h1>
+            </div>
+            
+            <div class="game-info">
+              <div class="timer">
+                <span class="label">Time:</span>
+                <span class="value">${formatTime(state.timeLeft)}</span>
+              </div>
+              
+              <div class="score">
+                <span class="label">Score:</span>
+                <span class="value">${state.score}</span>
+              </div>
+              
+              <div class="difficulty-selector">
+                <label for="difficulty">Difficulty:</label>
+                <select 
+                  id="difficulty" 
+                  value="${state.difficulty}" 
+                  onchange="actions.changeDifficulty(this.value)"
+                  ${state.isPlaying ? 'disabled' : ''}
+                >
+                  <option value="easy" ${state.difficulty === 'easy' ? 'selected' : ''}>Easy</option>
+                  <option value="medium" ${state.difficulty === 'medium' ? 'selected' : ''}>Medium</option>
+                  <option value="hard" ${state.difficulty === 'hard' ? 'selected' : ''}>Hard</option>
+                </select>
+              </div>
+            </div>
+          </header>
+        `;
+        
+        // Create instructions component
+        const instructions = `
+          <div class="instructions-container container">
+            <h2>How to Play</h2>
+            
+            <div class="instructions-content">
+              <p>
+                Word Scramble is a fun word game that tests your vocabulary and spelling skills.
+              </p>
+              
+              <ol>
+                <li>You will be shown a scrambled word.</li>
+                <li>Try to figure out what the original word is.</li>
+                <li>Type your answer in the input field.</li>
+                <li>Press Enter or click Submit to check your answer.</li>
+                <li>Use the "Skip Word" button if you're stuck.</li>
+                <li>Earn points for each correct word you unscramble.</li>
+                <li>Complete as many words as you can before time runs out!</li>
+              </ol>
+              
+              <p class="hint">
+                <strong>Tip:</strong> Choose your difficulty level before starting the game - 
+                harder difficulty levels give more points but use longer words!
+              </p>
+            </div>
+            
+            <button class="start-button" onclick="actions.startGame()">
+              Start Game
+            </button>
+          </div>
+        `;
+        
+        // Create game over modal component
+        const gameOverModal = `
+          <div class="game-over-modal container">
+            <h2>Game Over!</h2>
+            
+            <div class="final-score">
+              <span class="score-label">Your Score:</span>
+              <span class="score-value">${state.score}</span>
+            </div>
+            
+            <p class="score-message">${getScoreMessage()}</p>
+            
+            <div class="word-count">
+              Words completed: ${state.wordCount - 1}
+            </div>
+            
+            <button class="restart-button" onclick="actions.startGame()">
+              Play Again
+            </button>
+          </div>
+        `;
+        
+        // Render the appropriate components based on game state
+        let content = header;
+        
+        if (!state.isPlaying && !state.showGameOver) {
+          content += instructions;
+        } else if (state.isPlaying) {
+          content += createGameContainer();
+        } else if (state.showGameOver) {
+          content += gameOverModal;
+        }
+        
+        app.innerHTML = content;
+      }
+
+      // Make actions globally accessible
+      window.actions = actions;
+
+      // Initial render
+      render();
+    });
+  </script>
+</body>
+</html>
